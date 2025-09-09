@@ -11,13 +11,12 @@ export class RolesGuard implements CanActivate {
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
-console.log("i am in guards")
     if (!requiredRoles) {
       return true; 
     }
 
     const request = context.switchToHttp().getRequest();
-    const role = request.headers['role'];  // 👈 get role from header
+    const role = request.headers['role'];  
 
     if (!role) {
       throw new ForbiddenException('Role header not provided');

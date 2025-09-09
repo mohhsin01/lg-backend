@@ -9,7 +9,6 @@ import { UserDataInterceptor } from '../interceptor/users.interceptor';
 import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBadRequestResponse } from '@nestjs/swagger';
 
 @ApiTags('users')
-//@UseFilters(IdExceptionFilter) 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

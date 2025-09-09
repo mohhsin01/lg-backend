@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { Post } from '../posts/post.entity';
-import { ConflictEmailException } from '../Exception/email.exception';
+
 import { DataSource } from 'typeorm';
 
 jest.setTimeout(20000); //(My DB connections was taking a long time so i increse the Jest timeout)
@@ -68,7 +68,7 @@ afterAll(async () => {
         password: '67890',
         role :'user'
       }),
-    ).rejects.toThrow(ConflictEmailException);
+    ).rejects.toThrow('Email is already registered!');
   });
 
   it('should find all users', async () => {

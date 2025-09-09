@@ -2,7 +2,6 @@ import { Controller, Get, Post as HttpPost, Delete, Param, Body, UseGuards,UseIn
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/posts.dto';
 import { RolesGuard } from '../guards/roles.guards'; 
-import { UserId } from '../decorator/user.decorator';
 import { Id,ParamId } from '../decorator/post.decorator';
 import { ApiTags, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBadRequestResponse,ApiHeader } from '@nestjs/swagger';
 import{Roles} from '../decorator/roles.decorator';
@@ -19,7 +18,7 @@ export class PostsController {
 @ApiOperation({ summary: 'Create a new post' })
   @ApiCreatedResponse({ description: 'Post created successfully' })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
-  async create(@UserId() userId: number, @Body() dto: CreatePostDto, ) {
+  async create(@Param('userId') userId: number, @Body() dto: CreatePostDto, ) {
     return this.postsService.create({...dto,user: { id: userId } as any,});
 }
 

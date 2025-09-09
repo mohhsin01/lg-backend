@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { ConflictEmailException } from '../Exception/email.exception';
+import { ConflictException, InternalServerErrorException } from '@nestjs/common';
+
 
 @Injectable()
 export class UsersService {
@@ -12,20 +13,17 @@ export class UsersService {
   
   ) {}
 
-
 async create(userData: Partial<User>): Promise<User> {
-  
-  const existingUser = await this.usersRepository.findOne({
-    where: { email: userData.email },
-  });
-
-  if (existingUser) {
-    throw new ConflictEmailException(userData.email!);
-  }
-
-  
   const user = this.usersRepository.create({ ...userData });
-  return await this.usersRepository.save(user);
+
+  try {
+    return await this.usersRepository.save(user);
+  } catch (error) {
+    if (error.code === '23505') {  
+      throw new ConflictException('Email is already registered!');
+    }
+    throw new InternalServerErrorException('Unexpected error while creating user');
+  }
 }
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({ relations: ['posts'] });
@@ -36,7 +34,7 @@ async create(userData: Partial<User>): Promise<User> {
 async findOne(id: number): Promise<User | null> {
   return this.usersRepository.findOne({
     where: { id },
-  // relations: ['posts'],
+  // relations: ['posts'], (this is used for the users posts also)
   });
 }
 
