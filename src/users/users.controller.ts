@@ -1,29 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UseGuards,
-} from '@nestjs/common';
+import {Controller,Get,Post,Body,Patch,Param,Delete,UseInterceptors,UseGuards,} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AdminInterceptor } from 'src/interceptor/role.interceptor';
 import { RolesGuard } from 'src/guards/admin.guard';
 import { Roles } from 'src/decorators/roles.decorators';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiBadRequestResponse,
-  ApiBody,
-} from '@nestjs/swagger';
+import {ApiTags,ApiOperation,ApiCreatedResponse,ApiOkResponse,ApiParam,
+ApiBadRequestResponse,ApiBody,} from '@nestjs/swagger';
 
 @ApiTags('Users')
 @UseGuards(RolesGuard)
