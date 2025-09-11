@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Job } from '../jobs/jobs.entity';
 
 @Entity('users')
 export class User {
@@ -28,4 +29,8 @@ export class User {
 
   @Column({ nullable: true })
   phone: string;
+
+  // One user (BD) can create many jobs
+  @OneToMany(() => Job, (job) => job.user)
+  jobs: Job[];
 }
