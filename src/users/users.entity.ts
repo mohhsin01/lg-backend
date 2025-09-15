@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Job } from '../jobs/jobs.entity';
+import { Interview } from '../interviews/interviews.entity';
 
 @Entity('users')
 export class User {
@@ -33,4 +34,8 @@ export class User {
   // One user (BD) can create many jobs
   @OneToMany(() => Job, (job) => job.user)
   jobs: Job[];
+
+  @OneToMany(() => Interview, (interview) => interview.user)
+interviews: Interview[];
+
 }

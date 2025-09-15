@@ -1,9 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
-import { 
-  ApiHeader, ApiOperation, ApiCreatedResponse, ApiOkResponse, 
-  ApiParam, ApiBody, ApiBadRequestResponse, ApiNotFoundResponse,
-  ApiForbiddenResponse
-} from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiBody, ApiBadRequestResponse, ApiNotFoundResponse,
+  ApiForbiddenResponse} from '@nestjs/swagger';
 
 // ========== SPECIFIC JOB API DECORATORS ==========
 
@@ -56,15 +53,8 @@ export const GetJobsByDeveloperApi = () => applyDecorators(
 
 export const GetJobsByUserApi = () => applyDecorators(
   ApiOperation({ summary: 'Find all jobs posted by a specific user. Sample URL: http://localhost:3000/jobs/user/1' }),
-  ApiHeader({
-    name: 'role',
-    description: 'User role (admin or BD)',
-    required: true,
-    example: 'admin'
-  }),
   ApiParam({ name: 'userId', type: Number, description: 'BD ID' }),
   ApiOkResponse({ description: 'Jobs found for user' }),
-  ApiForbiddenResponse({ description: 'Access denied - Admin or BD role required' }),
   ApiNotFoundResponse({ description: 'User not found or no jobs posted' })
 );
 
