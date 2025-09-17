@@ -71,4 +71,5 @@ export class JobsController {
     console.log('Deleting job ID:', id);
     return this.jobsService.remove(+id);
   }
+  
 }
