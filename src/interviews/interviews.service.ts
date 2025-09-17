@@ -6,6 +6,7 @@ import { CreateInterviewDto } from './dto/interviews.dto';
 import { UpdateInterviewDto } from './dto/update-interview.dto';
 import { User } from '../users/users.entity';
 import { Job } from '../jobs/jobs.entity';
+import { MailService } from '../mails/mails.service';
 
 @Injectable()
 export class InterviewsService {
@@ -13,14 +14,22 @@ export class InterviewsService {
     @InjectRepository(Interview)
     private readonly interviewRepo: Repository<Interview>,
 
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+
+    private readonly mailService: MailService,
     
   ) {}
 
-  // ✅ Clean create method - validation is handled by guard
-  async create(dto: CreateInterviewDto): Promise<Interview> {
-    // Since guard has already validated existence, we can directly fetch
+   async create(dto: CreateInterviewDto): Promise<Interview> {
+    // ✅ Check if user exists
+    const user = await this.userRepo.findOne({ where: { id: dto.user_id } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${dto.user_id} not found`);
+    }
 
-   const interview = this.interviewRepo.create({
+    // ✅ Create interview entry
+    const interview = this.interviewRepo.create({
       user: { id: dto.user_id } as User,
       job: { job_id: dto.job_id } as Job,
       round_no: dto.round_no,
@@ -29,8 +38,20 @@ export class InterviewsService {
       status: dto.status,
     });
 
-    return this.interviewRepo.save(interview);
+    const savedInterview = await this.interviewRepo.save(interview);
+
+    
+    await this.mailService.sendInterviewAssignedNotification(
+      user.email,
+      dto.job_id,
+      dto.date,
+      dto.time,
+      dto.round_no,
+    );
+
+    return savedInterview;
   }
+
 
   findAll(): Promise<Interview[]> {
     return this.interviewRepo.find({
@@ -66,4 +87,5 @@ export class InterviewsService {
       throw new NotFoundException('Interview not found');
     }
   }
+  
 }

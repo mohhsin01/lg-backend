@@ -26,4 +26,5 @@ export class Interview {
 
   @Column({ default: 'scheduled' })
   status: string;
+  
 }

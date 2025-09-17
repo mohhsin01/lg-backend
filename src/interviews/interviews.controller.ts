@@ -61,4 +61,5 @@ export class InterviewsController {
   remove(@Param('id') id: string) {
     return this.interviewsService.remove(+id);
   }
+  
 }

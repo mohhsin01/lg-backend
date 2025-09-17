@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { Job } from './jobs.entity';
 import { User } from '../users/users.entity';
 import { CreateJobDto } from './dto/create-jobs.dto';
+import { MailerService } from '@nestjs-modules/mailer';
+import { MailService } from 'src/mails/mails.service';
 
 @Injectable()
 export class JobsService {
@@ -12,26 +14,38 @@ export class JobsService {
     private readonly jobRepository: Repository<Job>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+       private readonly mailService: MailService,
+
   ) {}
-
-  async create(createJobDto: CreateJobDto): Promise<Job> {
-    const { userId, ...jobData } = createJobDto;
-    
-    // First, verify that the user exists
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
-    }
-
-    // Create job with user relation
-    const job = this.jobRepository.create({
-      ...jobData,
-      user: user, // This sets up the relationship
-    });
-
-    return this.jobRepository.save(job);
+async create(createJobDto: CreateJobDto): Promise<Job> {
+  const { userId, ...jobData } = createJobDto;
+  
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) {
+    throw new NotFoundException(`User with ID ${userId} not found`);
   }
 
+  const job = this.jobRepository.create({
+    ...jobData,
+    user: user,
+  });
+  const savedJob = await this.jobRepository.save(job);
+
+  const adminUsers = await this.userRepository.find({
+    where: { role: 'admin' },
+    select: ['email'],
+  });
+
+  
+  for (const admin of adminUsers) {
+    await this.mailService.sendJobCreatedNotification(admin.email, savedJob.job_id, userId);
+  }
+
+  return savedJob;
+}
+
+  
   async findAll(): Promise<Job[]> {
     return this.jobRepository.find({
       relations: ['user'],
@@ -92,4 +106,5 @@ export class JobsService {
       throw error;
     }
   }
+  
 }

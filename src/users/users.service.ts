@@ -2,12 +2,14 @@ import { Injectable, ConflictException, InternalServerErrorException, NotFoundEx
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './users.entity';
+import { MailService } from '../mails/mails.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+      private readonly mailService: MailService,
   ) {}
 
   // Create User
@@ -15,7 +17,17 @@ export class UsersService {
     const user = this.usersRepository.create(userData);
 
     try {
-      return await this.usersRepository.save(user);
+      const savedUser= await this.usersRepository.save(user);
+
+        // 📨 Send email with credentials (plain password from userData)
+      await this.mailService.sendUserCredentials(
+        savedUser.email,
+        savedUser.name,
+        savedUser.password,
+      );
+
+      
+      return savedUser;
     } catch (error) {
       if (error.code === '23505') { // unique violation
         throw new ConflictException('Email is already registered!');
