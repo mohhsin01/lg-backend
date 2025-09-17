@@ -21,7 +21,7 @@ import { join } from 'path';
           from: 'Lead Generation "No Reply"',
         },
         template: {
-          dir: join(process.cwd(), 'src', 'templates'), // ✅ points to src/templates(bcz by default it points to dist/templates)
+          dir: join(process.cwd(), 'src', 'templates'), //  points to src/templates(bcz by default it points to dist/templates)
           adapter: new HandlebarsAdapter(),             
           options: { strict: true },
         },
