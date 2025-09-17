@@ -22,13 +22,13 @@ export class InterviewsService {
   ) {}
 
    async create(dto: CreateInterviewDto): Promise<Interview> {
-    // ✅ Check if user exists
+   
     const user = await this.userRepo.findOne({ where: { id: dto.user_id } });
     if (!user) {
       throw new NotFoundException(`User with ID ${dto.user_id} not found`);
     }
 
-    // ✅ Create interview entry
+  
     const interview = this.interviewRepo.create({
       user: { id: dto.user_id } as User,
       job: { job_id: dto.job_id } as Job,
