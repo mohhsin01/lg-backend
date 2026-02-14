@@ -6,7 +6,7 @@ import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-jobs.dto';
 import { UpdateJobDto } from './dto/update-jobs.dto';
 import { RolesGuard } from 'src/guards/admin.guard';
-import { JobUpdateGuard } from 'src/guards/job_update.guard';
+import { JobUpdateGuard } from 'src/guards/Authority.guard';
 import { Roles } from 'src/decorators/roles.decorators';
 import { JobInterceptor } from 'src/interceptor/job.interceptor';
 import { CreateJobApi,GetAllJobsApi,GetJobsByDeveloperApi,GetJobsByUserApi,GetJobByIdApi,UpdateJobApi,DeleteJobApi} from '../decorators/jobApi.decorators';
@@ -42,7 +42,6 @@ export class JobsController {
   }
 
   @Get('user/:userId')
-  @Roles('admin', 'BD')
   @GetJobsByUserApi()
   findByUserId(@Param('userId') userId: string) {
     console.log('Getting jobs for user:', userId);

@@ -10,6 +10,7 @@ ApiBadRequestResponse,ApiBody,} from '@nestjs/swagger';
 
 @ApiTags('Users')
 @UseGuards(RolesGuard)
+@Roles('admin')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -24,6 +25,7 @@ export class UsersController {
         name: { type: 'string', example: 'Taha Tayyab' },
         email: { type: 'string', example: 'taaaha@example.com' },
         password: { type: 'string', example: '123456' },
+        role:{type:'string', example: 'developer, BD (if admin is creating the users)'}
       },
       required: ['name', 'email', 'password'],
     },
@@ -62,7 +64,7 @@ export class UsersController {
         name: { type: 'string', example: 'Ali Khan' },
         email: { type: 'string', example: 'ali@example.com' },
         password: { type: 'string', example: '123456' },
-        role: { type: 'string', example: 'admin' },
+        role: { type: 'string', example: 'admin, BD, developer' },
         education: { type: 'string', example: 'BS Computer Science' },
         skill: { type: 'string', example: 'NestJS, TypeORM' },
         experience: { type: 'string', example: '3 years in backend development' },

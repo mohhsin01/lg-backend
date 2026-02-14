@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,OneToMany } from 'typeorm';
 import { User } from '../users/users.entity';
+import { Interview } from '../interviews/interviews.entity';
 
 @Entity('jobs')
 export class Job {
@@ -29,4 +30,8 @@ export class Job {
  
   @Column({ nullable: true })
   dev_id: number;
+
+  @OneToMany(() => Interview, (interview) => interview.job)
+interviews: Interview[];
+
 }
